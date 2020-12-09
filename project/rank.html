@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>排行榜</title>
+    <script src="js/jquery.min.js"></script>
+    <style type="text/css">
+    .ranking
+    {
+        display: block;
+        background-color: #f3f3f3;
+        color:#272e38;
+        box-shadow:0 1px 1px rgba(0,0,0,0.08) inset, 0 1px 1px #fafafa;
+        text-align:left;
+	    border-radius:30px;
+        width: 1450px;
+        margin-left: 30px;
+        margin-bottom: 20px;
+        height: 560px;
+        position: absolute;
+        opacity:0.8
+    }
+    .lists
+    {
+        margin-left: 55px;
+        margin-top: 16px;
+        font-family: 华文中宋;
+        font-size: 25px;
+        font-weight: bold;
+        line-height:40px;  
+    }
+    </style>
+</head>
+<body style="background: url(img/background.png) ; background-size:100% 100% ; background-attachment: fixed">
+    <div style="text-align: center;color: white; font-size: 37px; font-weight: bold; font-family: 微软雅黑;">排行榜</div>
+    <div style="text-align: center;color: white; font-size: 25px; margin-top: 12px; margin-bottom: 12px;font-weight: bold; font-family: 微软雅黑">Ranking</div>
+    <div class = "ranking">
+        <div class="lists" id="all_list"></div>
+    </div>
+    <script>
+        window.onload=function(){
+            load_list();
+        }
+        function show_time(score){
+            base="";
+            if(score>=3600){
+                base=base+score/3600+"时";
+                score=score%3600;
+            }
+            if(score>=60){
+                base=base+score/60+"分";
+                score=score%60;
+            }
+            base=base+score+"秒";
+            return base;
+        }
+        function addDiv(info,rk){
+            need_time=show_time(info.score);
+            divhtml="<div class='smalldiv'>"+rk+"  "+info.username+" "+need_time+"<\div>";
+            $("#all_list").append(divhtml);
+        }
+        function load_list(){
+            $.ajax({
+                url:"http://47.113.114.73:9911/cube_return_list",
+                //url: "http://localhost:8080/cube/return_list",
+                type: "POST",
+                dataType: 'json',
+                //data:JSON.stringify(info), 
+                contentType: "application/json",
+                success: function (data) {
+                    for(var i=0;i<data.length;i++){
+                        addDiv(data[i],i+1);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+
+        }
+    </script>
+</body>
+</html>
